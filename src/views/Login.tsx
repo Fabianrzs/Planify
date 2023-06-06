@@ -4,6 +4,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {useEffect, useState} from 'react';
+
 import auth from '@react-native-firebase/auth';
 
 GoogleSignin.configure({
@@ -49,6 +50,7 @@ export default function () {
       // Create a Google credential with the token
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       await auth().signInWithCredential(googleCredential);
+
     } catch (error: any) {
       console.log(error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -71,6 +73,7 @@ export default function () {
 
       <TouchableOpacity onPress={() => sigInEmailAndPassword()}>
         <Text>LOGIN USER AND PASSWORD</Text>
+
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => singOut()}>
