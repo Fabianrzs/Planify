@@ -5,6 +5,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
+//import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 
 GoogleSignin.configure({
   webClientId:
@@ -18,6 +19,20 @@ export default function () {
     auth()
       .signOut()
       .then(() => console.log('User signed out!'));
+  };
+  const singInAnonimous = async () => {
+    auth()
+      .signInAnonymously()
+      .then(data => {
+        console.log('user', data);
+        console.log('User signed in anonymously');
+      })
+      .catch(error => {
+        if (error.code === 'auth/operation-not-allowed') {
+          console.log('Enable anonymous in your firebase console.');
+        }
+        console.error(error);
+      });
   };
   const sigInEmailAndPassword = async () => {
     auth()
@@ -62,15 +77,49 @@ export default function () {
       }
     }
   };
+  /*const onFacebookButtonPress = async () => {
+    // Attempt login with permissions
+    const result = await LoginManager.logInWithPermissions([
+      'public_profile',
+      'email',
+    ]);
 
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+
+    // Once signed in, get the users AccesToken
+    const data = await AccessToken.getCurrentAccessToken();
+
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(
+      data.accessToken,
+    );
+
+    // Sign-in the user with the credential
+    await auth().signInWithCredential(facebookCredential);
+  };*/
   return (
     <View>
       <TouchableOpacity onPress={() => signInGoogle()}>
         <Text>LOGIN GOOGLE</Text>
       </TouchableOpacity>
-
+      <TouchableOpacity onPress={() => singInAnonimous()}>
+        <Text>Anonimous</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => sigInEmailAndPassword()}>
         <Text>LOGIN USER AND PASSWORD</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => {
+          /*onFacebookButtonPress()*/
+        }}>
+        <Text>LOGIN FACEBOOK</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => singOut()}>
