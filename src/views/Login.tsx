@@ -5,6 +5,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {useEffect} from 'react';
 
 GoogleSignin.configure({
   webClientId:
@@ -99,6 +100,40 @@ export default function () {
       } else {
         console.log('DEFAULT');
       }
+    }
+  };
+
+  useEffect(() => {
+    checkSession().then();
+  }, []);
+
+  const checkSession = async () => {
+    const currentUser = auth().currentUser;
+
+    if (currentUser) {
+      // Extraer los datos del usuario
+      const {uid, displayName, email, photoURL, phoneNumber} = currentUser;
+
+      // Utilizar los datos según tus necesidades
+      console.log('ID de usuario:', uid);
+      console.log('Nombre de usuario:', displayName);
+      console.log('Correo electrónico:', email);
+      console.log('Numero de telefono:', phoneNumber);
+      console.log('URL de la foto de perfil:', photoURL);
+
+      const userRef = firestore().collection('Users').doc(uid);
+      const userSnapshot = await userRef.get();
+
+      if (userSnapshot.exists) {
+        // Extraer los datos adicionales del usuario
+        const userData = userSnapshot.data();
+        // Utilizar los datos según tus necesidades
+        console.log('Datos adicionales del usuario:', userData);
+      } else {
+        console.log('No se encontraron datos adicionales para el usuario');
+      }
+    } else {
+      console.log('No hay usuario autenticado');
     }
   };
   /*const onFacebookButtonPress = async () => {
