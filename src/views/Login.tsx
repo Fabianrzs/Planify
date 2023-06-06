@@ -63,7 +63,8 @@ export default function () {
 
       // Create a Google credential with the token
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCredential);
+      const usr = await auth().signInWithCredential(googleCredential);
+      console.log(usr);
     } catch (error: any) {
       console.log(error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
