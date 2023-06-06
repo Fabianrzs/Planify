@@ -3,9 +3,8 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
-//import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
+import firestore from '@react-native-firebase/firestore';
 
 GoogleSignin.configure({
   webClientId:
@@ -13,8 +12,32 @@ GoogleSignin.configure({
 });
 
 export default function () {
-  const [user, setUser] = useState({});
-  useEffect(() => {}, [user]);
+  const loadUsers = async () => {
+    try {
+      const querySnapshot = await firestore().collection('Users').get();
+      let usersF: any[] = [];
+
+      querySnapshot.forEach(documentSnapshot => {
+        const userData = documentSnapshot.data();
+        usersF.push(userData);
+      });
+
+      console.log(usersF);
+    } catch (error) {
+      console.error('Error al cargar los usuarios:', error);
+    }
+  };
+  const saveUsers = async () => {
+    firestore()
+      .collection('Users')
+      .add({
+        name: 'Ada Lovelace',
+        age: 30,
+      })
+      .then(() => {
+        console.log('User added!');
+      });
+  };
   const singOut = async () => {
     auth()
       .signOut()
@@ -116,18 +139,17 @@ export default function () {
         <Text>LOGIN USER AND PASSWORD</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => {
-          /*onFacebookButtonPress()*/
-        }}>
-        <Text>LOGIN FACEBOOK</Text>
-      </TouchableOpacity>
-
       <TouchableOpacity onPress={() => singOut()}>
         <Text>SALIR</Text>
       </TouchableOpacity>
 
-      <Text>{JSON.stringify(user)}</Text>
+      <TouchableOpacity onPress={() => loadUsers()}>
+        <Text>LOAD USERS</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => saveUsers()}>
+        <Text>SAVE USER</Text>
+      </TouchableOpacity>
     </View>
   );
 }
