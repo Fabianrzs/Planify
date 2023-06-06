@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "426388272963-msno9jpuav9d4v4hhl3udl9mtokqnhie.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.planify",
+            "certificate_hash": "18df64e04bd64af82797c9c8323d401122d82bff"
+          }
+        },
+        {
           "client_id": "426388272963-809a7iqjd02qtabq2995npclhr9cvgeu.apps.googleusercontent.com",
           "client_type": 3
         }
