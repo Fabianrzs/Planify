@@ -38,7 +38,7 @@ export default function () {
   };
 
   const checkSession = async () => {
-    currentUser && dispatchUser(currentUser);
+    currentUser !== null ? dispatchUser(currentUser) : dispatch(unSetUser());
   };
 
   const Anonimous = async () => {
