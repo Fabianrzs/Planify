@@ -7,6 +7,7 @@ import useAuth from '../hook/useAuth';
 import {Text} from 'react-native-paper';
 import * as yup from 'yup';
 import useYupSchema from '../hook/useYupSchema';
+import useUserStore from 'hook/useProyectStore';
 
 export interface LoginFormValues {
   email: string;
@@ -16,6 +17,8 @@ export interface LoginFormValues {
 export default function () {
   const {Out, Google, EmailAndPassword, Anonimous} = useAuth();
   const {passwordSchema, emailSchema} = useYupSchema();
+
+  const {saveProyect, updateProyect, deleteProyect, proyects} = useUserStore();
 
   const validateForm = async (values: LoginFormValues) => {
     const validationErrors: Partial<LoginFormValues> = {};
@@ -90,6 +93,22 @@ export default function () {
       <TouchableOpacity onPress={Out}>
         <Text>SALIR</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={saveProyect}>
+        <Text>Save</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={updateProyect}>
+        <Text>Update</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={deleteProyect}>
+        <Text>Delete</Text>
+      </TouchableOpacity>
+
+      {proyects.map(({name}, index) => {
+        return <Text key={index}>{name}</Text>;
+      })}
     </View>
   );
 }
