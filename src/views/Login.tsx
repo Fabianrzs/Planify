@@ -1,16 +1,9 @@
 import {Text, TouchableOpacity, View} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import authService from '../service/authService';
-import {useEffect} from 'react';
+import useAuth from '../hook/useAuth';
 
 export default function () {
-  const {
-    singInAnonimous,
-    signOut,
-    signInGoogle,
-    sigInEmailAndPassword,
-    currentUser,
-  } = authService();
+  const {Out, Google, EmailAndPassword, Anonimous} = useAuth();
 
   const loadUsers = async () => {
     try {
@@ -38,36 +31,18 @@ export default function () {
         console.log('User added!');
       });
   };
-  useEffect(() => {
-    checkSession().then();
-  }, []);
 
-  const checkSession = async () => {
-    if (currentUser) {
-      // Extraer los datos del usuario
-      const {uid, displayName, email, photoURL, phoneNumber} = currentUser;
-
-      // Utilizar los datos según tus necesidades
-      console.log('ID de usuario:', uid);
-      console.log('Nombre de usuario:', displayName);
-      console.log('Correo electrónico:', email);
-      console.log('Numero de telefono:', phoneNumber);
-      console.log('URL de la foto de perfil:', photoURL);
-    } else {
-      console.log('No hay usuario autenticado');
-    }
-  };
   return (
     <View>
-      <TouchableOpacity onPress={signInGoogle}>
+      <TouchableOpacity onPress={Google}>
         <Text>LOGIN GOOGLE</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={singInAnonimous}>
+      <TouchableOpacity onPress={Anonimous}>
         <Text>Anonimous</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() =>
-          sigInEmailAndPassword({
+          EmailAndPassword({
             email: 'jane.doe@example.com',
             password: 'SuperSecretPassword!',
           }).then(data => console.log(data))
@@ -75,7 +50,7 @@ export default function () {
         <Text>LOGIN USER AND PASSWORD</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={signOut}>
+      <TouchableOpacity onPress={Out}>
         <Text>SALIR</Text>
       </TouchableOpacity>
 

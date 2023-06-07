@@ -7,7 +7,6 @@ import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 GoogleSignin.configure({
   webClientId:
     '426388272963-809a7iqjd02qtabq2995npclhr9cvgeu.apps.googleusercontent.com',
-  //pasar a una variable de entorno
 });
 
 type userCredencial = Promise<FirebaseAuthTypes.UserCredential | undefined>;

@@ -1,3 +1,5 @@
+import {FirebaseAuthTypes} from '@react-native-firebase/auth';
+
 export interface UserInfo {
   displayName: string | null;
   email: string | null;
@@ -17,5 +19,5 @@ export interface AuthData {
   additionalUserInfo: {
     isNewUser: boolean;
   };
-  user: UserInfo;
+  user: FirebaseAuthTypes.UserCredential;
 }

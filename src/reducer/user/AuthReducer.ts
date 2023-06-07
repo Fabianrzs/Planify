@@ -1,9 +1,9 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {UserInfo} from '../../models/AuthData';
+import {FirebaseAuthTypes} from '@react-native-firebase/auth';
 
 interface AuthState {
   isAuthenticated: 'check' | 'auth' | 'no-auth';
-  userInfo: UserInfo | null;
+  userInfo: FirebaseAuthTypes.User | null;
 }
 
 const initialState: AuthState = {
@@ -15,11 +15,12 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<UserInfo>) => {
+    setUser: (state, action: PayloadAction<FirebaseAuthTypes.User>) => {
+      const {payload} = action;
       return {
         ...state,
         isAuthenticated: 'auth',
-        userInfo: action.payload,
+        userInfo: payload,
       };
     },
     unSetUser: state => {
