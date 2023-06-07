@@ -1,86 +1,95 @@
-import {Text, TouchableOpacity, View} from 'react-native';
-import {
-  GoogleSignin,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
-import {useEffect, useState} from 'react';
+import {TouchableOpacity, View} from 'react-native';
+import {FormBase} from '../components/FormBase';
+import {FormikProps} from 'formik';
+import {InputField} from '../components/InputField';
+import React from 'react';
+import useAuth from '../hook/useAuth';
+import {Text} from 'react-native-paper';
+import * as yup from 'yup';
+import useYupSchema from '../hook/useYupSchema';
 
-import auth from '@react-native-firebase/auth';
-
-GoogleSignin.configure({
-  webClientId:
-    '426388272963-809a7iqjd02qtabq2995npclhr9cvgeu.apps.googleusercontent.com',
-});
+export interface LoginFormValues {
+  email: string;
+  password: string;
+}
 
 export default function () {
-  const [user, setUser] = useState({});
-  useEffect(() => {}, [user]);
-  const singOut = async () => {
-    auth()
-      .signOut()
-      .then(() => console.log('User signed out!'));
-  };
-  const sigInEmailAndPassword = async () => {
-    auth()
-      .createUserWithEmailAndPassword(
-        'jane.doe@example.com',
-        'SuperSecretPassword!',
-      )
-      .then(() => {
-        console.log('User account created & signed in!');
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-        }
+  const {Out, Google, EmailAndPassword, Anonimous} = useAuth();
+  const {passwordSchema, emailSchema} = useYupSchema();
 
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-        }
-
-        console.error(error);
-      });
-  };
-  const signInGoogle = async () => {
+  const validateForm = async (values: LoginFormValues) => {
+    const validationErrors: Partial<LoginFormValues> = {};
+    const schema = yup.object().shape({
+      email: emailSchema,
+      password: passwordSchema,
+    });
     try {
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-      // Get the users ID token
-      const {idToken} = await GoogleSignin.signIn();
-
-      // Create a Google credential with the token
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCredential);
-
-    } catch (error: any) {
-      console.log(error);
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log('SIGN_IN_CANCELLED');
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log('IN_PROGRESS');
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log('PLAY_SERVICES_NOT_AVAILABLE');
-      } else {
-        console.log('DEFAULT');
+      await schema.validate(values, {abortEarly: false});
+      return validationErrors;
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        error.inner.forEach(err => {
+          validationErrors[err.path as keyof LoginFormValues] = err.message;
+        });
       }
+      return validationErrors;
     }
+  };
+
+  const fields = (formikProps: FormikProps<LoginFormValues>) => {
+    const {errors, values, handleBlur, handleChange} = formikProps;
+    return (
+      <>
+        <InputField
+          label="Correo electrónico"
+          value={values.email}
+          onChangeText={handleChange('email')}
+          onBlur={handleBlur('email')}
+          error={errors.email}
+          mode={'outlined'}
+        />
+        <InputField
+          label="Contraseña"
+          value={values.password}
+          onChangeText={handleChange('password')}
+          onBlur={handleBlur('password')}
+          secureTextEntry
+          error={errors.password}
+        />
+      </>
+    );
+  };
+
+  const handleLogin = (values: LoginFormValues) => {
+    EmailAndPassword(values).then(data => console.log(data));
+    console.log(values);
+  };
+
+  const initialValues: LoginFormValues = {
+    email: '',
+    password: '',
   };
 
   return (
     <View>
-      <TouchableOpacity onPress={() => signInGoogle()}>
+      <FormBase
+        initialValues={initialValues}
+        onSubmit={handleLogin}
+        validateForm={validateForm}
+        fields={fields}
+        button
+        buttonText={'LOGIN EMAIL AND PASSWORD'}
+      />
+
+      <TouchableOpacity onPress={Google}>
         <Text>LOGIN GOOGLE</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => sigInEmailAndPassword()}>
-        <Text>LOGIN USER AND PASSWORD</Text>
-
+      <TouchableOpacity onPress={Anonimous}>
+        <Text>Anonimous</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => singOut()}>
+      <TouchableOpacity onPress={Out}>
         <Text>SALIR</Text>
       </TouchableOpacity>
-
-      <Text>{JSON.stringify(user)}</Text>
     </View>
   );
 }
