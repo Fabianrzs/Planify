@@ -1,10 +1,11 @@
 import authService from '../service/authService';
-import {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {setUser, unSetUser} from '../reducer/user/AuthReducer';
 import {FirebaseAuthTypes} from '@react-native-firebase/auth';
 
 export default function () {
+  const dispatch = useDispatch();
+
   const {
     singInAnonimous,
     signInGoogle,
@@ -12,8 +13,6 @@ export default function () {
     signOut,
     currentUser,
   } = authService();
-
-  const dispatch = useDispatch();
 
   const dispatchUser = (user: FirebaseAuthTypes.User) => {
     const {
@@ -38,19 +37,8 @@ export default function () {
     );
   };
 
-  useEffect(() => {
-    checkSession().then();
-  }, []);
-
   const checkSession = async () => {
     currentUser && dispatchUser(currentUser);
-    console.log(currentUser);
-    /*const {uid, displayName, email, photoURL, phoneNumber} = currentUser;
-    console.log('ID de usuario:', uid);
-    console.log('Nombre de usuario:', displayName);
-    console.log('Correo electrónico:', email);
-    console.log('Numero de telefono:', phoneNumber);
-    console.log('URL de la foto de perfil:', photoURL);*/
   };
 
   const Anonimous = async () => {
@@ -79,5 +67,6 @@ export default function () {
     Google,
     EmailAndPassword,
     Out,
+    checkSession,
   };
 }
