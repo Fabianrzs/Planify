@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../views/Login';
 import useAuth from '../hook/useAuth';
 import {useSelector} from 'react-redux';
+import {Alert} from 'components/Alert';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,11 +18,14 @@ export default function StackNavigator() {
   }, [isAuthenticated]);
 
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="Login" component={Login} />
-    </Stack.Navigator>
+    <>
+      <Alert />
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <Stack.Screen name="Login" component={Login} />
+      </Stack.Navigator>
+    </>
   );
 }
