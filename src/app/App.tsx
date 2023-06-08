@@ -12,14 +12,14 @@ const App = () => {
     colorScheme === 'dark' ? {...MD3DarkTheme} : {...MD3LightTheme};
 
   return (
-    <Provider store={store}>
-      <PaperProvider theme={paperTheme}>
-        <NavigationContainer>
+    <NavigationContainer>
+      <Provider store={store}>
+        <PaperProvider theme={paperTheme}>
           {/*<DrawerNavigator />*/}
           <StackNavigator />
-        </NavigationContainer>
-      </PaperProvider>
-    </Provider>
+        </PaperProvider>
+      </Provider>
+    </NavigationContainer>
   );
 };
 

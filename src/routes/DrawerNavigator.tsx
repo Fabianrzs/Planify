@@ -1,18 +1,36 @@
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import Home from 'views/Home';
-import {useWindowDimensions} from 'react-native';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from '@react-navigation/drawer';
 import TabNavigator from 'routes/TabNavigator';
+import Setting from 'views/Setting';
+import {StyleSheet} from 'react-native';
 
 const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigator() {
-  const {width} = useWindowDimensions();
-
   return (
-    // @ts-ignore
-    <Drawer.Navigator drawerType={width >= 768 ? 'permanent' : 'front'}>
-      <Drawer.Screen name="Tabs" component={TabNavigator} />
-      <Drawer.Screen name="Home" options={{title: 'Home'}} component={Home} />
+    <Drawer.Navigator
+      drawerContent={CustomDrawerContent}
+      screenOptions={{
+        headerShown: false,
+        drawerType: 'front',
+        unmountOnBlur: true,
+        headerTransparent: true,
+        drawerStatusBarAnimation: 'fade',
+        drawerStyle: StyleSheet.absoluteFill,
+      }}>
+      <Drawer.Screen name="tabs" component={TabNavigator} />
+      <Drawer.Screen name="setting" component={Setting} />
     </Drawer.Navigator>
   );
 }
+const CustomDrawerContent = (props: any) => {
+  return (
+    <DrawerContentScrollView {...props}>
+      {/* Contenido del Drawer */}
+      <DrawerItemList {...props} />
+    </DrawerContentScrollView>
+  );
+};
