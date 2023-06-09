@@ -4,7 +4,7 @@ import Login from '../views/Login';
 import useAuth from '../hook/useAuth';
 import {useSelector} from 'react-redux';
 import {Alert} from 'components/Alert';
-import DrawerNavigator from 'routes/DrawerNavigator';
+import TabNavigator from 'routes/TabNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +26,7 @@ export default function StackNavigator() {
           headerShown: false,
         }}>
         {isAuthenticated === 'auth' ? (
-          <Stack.Screen name="Main" component={DrawerNavigator} />
+          <Stack.Screen name="Main" component={TabNavigator} />
         ) : (
           <Stack.Screen name="Login" component={Login} />
         )}

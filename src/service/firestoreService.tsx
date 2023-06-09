@@ -148,7 +148,25 @@ export default function () {
   };
 }
 
-/*const saveCollection = async (collectionName: string, documentData: any) => {
+/*
+import React, { useEffect } from 'react';
+import firestore from '@react-native-firebase/firestore';
+
+function User({ userId }) {
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('Users')
+      .doc(userId)
+      .onSnapshot(documentSnapshot => {
+        console.log('User data: ', documentSnapshot.data());
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
+  }, [userId]);
+}
+
+const saveCollection = async (collectionName: string, documentData: any) => {
     try {
       const collectionRef = await firestore()
         .collection(collectionName)
