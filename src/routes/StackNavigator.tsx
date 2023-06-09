@@ -5,6 +5,10 @@ import useAuth from '../hook/useAuth';
 import {useSelector} from 'react-redux';
 import {Alert} from 'components/Alert';
 import TabNavigator from 'routes/TabNavigator';
+import {
+  NotificationListener,
+  requestUserPermission,
+} from 'service/pushnotification_helper';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +21,12 @@ export default function StackNavigator() {
     console.log('State', isAuthenticated);
     checkSession().then();
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    requestUserPermission().then();
+    //GetFCMToken().then();
+    NotificationListener().then();
+  }, []);
 
   return (
     <>
