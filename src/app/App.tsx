@@ -1,10 +1,10 @@
-import React from 'react';
-import StackNavigator from '../routes/StackNavigator';
 import {NavigationContainer} from '@react-navigation/native';
 import {useColorScheme} from 'react-native';
-import {MD3DarkTheme, MD3LightTheme, PaperProvider} from 'react-native-paper';
+import {PaperProvider} from 'react-native-paper';
+import {MD3DarkTheme, MD3LightTheme} from 'styles/themes';
 import store from './store';
 import {Provider} from 'react-redux';
+import StackNavigator from 'routes/StackNavigator';
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -12,13 +12,14 @@ const App = () => {
     colorScheme === 'dark' ? {...MD3DarkTheme} : {...MD3LightTheme};
 
   return (
-    <Provider store={store}>
-      <PaperProvider theme={paperTheme}>
-        <NavigationContainer>
+    <NavigationContainer>
+      <Provider store={store}>
+        <PaperProvider theme={paperTheme}>
+          {/*<DrawerNavigator />*/}
           <StackNavigator />
-        </NavigationContainer>
-      </PaperProvider>
-    </Provider>
+        </PaperProvider>
+      </Provider>
+    </NavigationContainer>
   );
 };
 

@@ -3,6 +3,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../views/Login';
 import useAuth from '../hook/useAuth';
 import {useSelector} from 'react-redux';
+import {Alert} from 'components/Alert';
+import TabNavigator from 'routes/TabNavigator';
+import {
+  NotificationListener,
+  requestUserPermission,
+} from 'service/pushnotification_helper';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,12 +22,25 @@ export default function StackNavigator() {
     checkSession().then();
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    requestUserPermission().then();
+    //GetFCMToken().then();
+    NotificationListener().then();
+  }, []);
+
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="Login" component={Login} />
-    </Stack.Navigator>
+    <>
+      <Alert />
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        {isAuthenticated === 'auth' ? (
+          <Stack.Screen name="Main" component={TabNavigator} />
+        ) : (
+          <Stack.Screen name="Login" component={Login} />
+        )}
+      </Stack.Navigator>
+    </>
   );
 }

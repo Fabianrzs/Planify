@@ -3,6 +3,8 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import {AlertState, triggerAlert} from 'reducer/AlertReducer';
+import {useDispatch} from 'react-redux';
 
 GoogleSignin.configure({
   webClientId:
@@ -12,17 +14,29 @@ GoogleSignin.configure({
 type userCredencial = Promise<FirebaseAuthTypes.UserCredential | undefined>;
 
 export default function () {
+  const alert: AlertState = {
+    title: 'Auth Error',
+    content: '',
+    visible: true,
+    state: 'alert',
+  };
+
   const {currentUser} = auth();
+  const dispatch = useDispatch();
 
   const singInAnonimous: () => userCredencial = async () => {
     try {
-      console.log('sing in anonikous');
+      console.log('sing in anoninous');
       return await auth().signInAnonymously();
     } catch (error: any) {
       if (error.code === 'auth/operation-not-allowed') {
-        console.log('Enable anonymous in your firebase console.');
+        dispatch(
+          triggerAlert({
+            ...alert,
+            content: 'Enable anonymous in your firebase console.',
+          } as AlertState),
+        );
       }
-      console.error(error);
       return undefined;
     }
   };
@@ -35,17 +49,27 @@ export default function () {
       console.log('sigIn Email And Password');
       return await auth().createUserWithEmailAndPassword(email, password);
     } catch (error: any) {
+      console.log('Error');
+      let content = '';
       switch (error.code) {
         case 'auth/email-already-in-use':
-          console.log('That email address is already in use!');
+          content = 'That email address is already in use!';
           break;
         case 'auth/invalid-email':
-          console.log('That email address is invalid!');
+          content = 'That email address is invalid!';
           break;
         default:
-          console.error(error);
+          content = error;
           break;
       }
+
+      dispatch(
+        triggerAlert({
+          ...alert,
+          content,
+        } as AlertState),
+      );
+
       return undefined;
     }
   };
@@ -58,20 +82,29 @@ export default function () {
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       return await auth().signInWithCredential(googleCredential);
     } catch (error: any) {
+      let content = '';
       switch (error.code) {
         case statusCodes.SIGN_IN_CANCELLED:
-          console.log('SIGN_IN_CANCELLED');
+          content = 'SIGN IN CANCELLED';
           break;
         case statusCodes.IN_PROGRESS:
           console.log('IN_PROGRESS');
+          content = 'IN PROGRESS';
           break;
         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
           console.log('PLAY_SERVICES_NOT_AVAILABLE');
+          content = 'PLAY SERVICES NOT AVAILABLE';
           break;
         default:
           console.log(error);
           break;
       }
+      dispatch(
+        triggerAlert({
+          ...alert,
+          content,
+        } as AlertState),
+      );
       return undefined;
     }
   };
