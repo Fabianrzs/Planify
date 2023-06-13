@@ -1,7 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {useColorScheme} from 'react-native';
 import {PaperProvider} from 'react-native-paper';
-import {MD3DarkTheme, MD3LightTheme} from 'styles/themes';
+import {MD2DarkTheme, MD2LightTheme} from 'styles/themes';
 import store from './store';
 import {Provider} from 'react-redux';
 import StackNavigator from 'routes/StackNavigator';
@@ -9,7 +9,7 @@ import StackNavigator from 'routes/StackNavigator';
 const App = () => {
   const colorScheme = useColorScheme();
   const paperTheme =
-    colorScheme === 'dark' ? {...MD3DarkTheme} : {...MD3LightTheme};
+    colorScheme === 'dark' ? {...MD2DarkTheme} : {...MD2LightTheme};
 
   return (
     <NavigationContainer>

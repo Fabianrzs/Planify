@@ -1,6 +1,7 @@
 import React from 'react';
-import {Button, View} from 'react-native';
+import {View} from 'react-native';
 import {Formik, FormikProps} from 'formik';
+import {Button} from 'react-native-paper';
 
 interface FormProps<T> {
   initialValues: T;
@@ -29,10 +30,9 @@ export const FormBase = <T extends Object>({
           <>
             {fields(formikProps)}
             {button && (
-              <Button
-                onPress={formikProps.handleSubmit}
-                title={buttonText || ''}
-              />
+              <Button mode={'elevated'} onPress={formikProps.handleSubmit}>
+                {buttonText || ''}
+              </Button>
             )}
           </>
         </View>
